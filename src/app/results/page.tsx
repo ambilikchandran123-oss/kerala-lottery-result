@@ -5,7 +5,7 @@ import { WinningEntry } from '@/types/lottery';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export default async function HomePage() {
+export default async function ResultsPage() {
   const lotteries = await LotteryRepository.getLotteries();
   const publishedDraws = await LotteryRepository.getPublishedDraws();
   const todayDraw = await LotteryRepository.getTodayOrLatestDraw();
@@ -22,7 +22,9 @@ export default async function HomePage() {
         draws={publishedDraws}
         todayDraw={todayDraw}
         todayTopWinningEntries={todayTopWinningEntries}
+        initialViewMode="previous-list"
       />
     </div>
   );
 }
+

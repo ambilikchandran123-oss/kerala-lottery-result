@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Inter', 'Anek Malayalam', 'Anek Tamil', 'Anek Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.875rem;
+  --background: oklch(96.5% 0.025 90); /* #F5F2EB Warm Kasavu Cream */
+  --foreground: oklch(22% 0.02 60);    /* #1D221F Deep readable charcoal */
+  --card: oklch(98.8% 0.01 90);        /* #FCFBF8 Clean Ivory Card */
+  --card-foreground: oklch(22% 0.02 60);
+  --popover: oklch(98.8% 0.01 90);
+  --popover-foreground: oklch(22% 0.02 60);
+  --primary: #C9A227;                  /* #C9A227 Malayalam Chats Gold */
+  --primary-foreground: #1C1404;
+  --secondary: oklch(93% 0.03 95);     /* #ECE7DC */
+  --secondary-foreground: #1D221F;
+  --muted: oklch(94% 0.02 90);         /* #EFECE4 */
+  --muted-foreground: #636058;         /* Neutral warm slate (no green) */
+  --accent: #C9A227;                   /* Malayalam Chats Accent Gold */
+  --accent-foreground: #1C1404;
+  --destructive: oklch(55% 0.22 25);
+  --destructive-foreground: #FFFFFF;
+  --border: oklch(88% 0.03 90);        /* #DDD9CE Warm Card Border */
+  --input: oklch(98.8% 0.01 90);
+  --ring: #C9A227;
+  --gold: #C9A227;                     /* #C9A227 Official Malayalam Chats Color */
+  --gold-foreground: #1C1404;
+  --cream: oklch(96.5% 0.025 90);
+  --font-sans: 'Inter', 'Anek Malayalam', 'Anek Tamil', 'Anek Devanagari', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Inter', 'Anek Malayalam', 'Anek Tamil', 'Anek Devanagari', sans-serif;
+  --font-display: 'Inter', 'Anek Malayalam', 'Anek Tamil', 'Anek Devanagari', sans-serif;
+  --font-malayalam: 'Anek Malayalam', 'Inter', sans-serif;
+  --font-tamil: 'Anek Tamil', 'Inter', sans-serif;
+  --font-hindi: 'Anek Devanagari', 'Inter', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body, button, input, optgroup, select, textarea, h1, h2, h3, h4, h5, h6, p, span, a, label {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: 
+    radial-gradient(at 15% 0%, rgba(201, 162, 39, 0.08), transparent 60%), 
+    radial-gradient(at 85% 100%, rgba(201, 162, 39, 0.12), transparent 60%);
+  background-attachment: fixed;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  padding-bottom: 5.5rem;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Highly Readable Modern Typography */
+h1, h2, h3, h4, h5, h6, .font-serif, .font-display {
+  font-family: var(--font-sans) !important;
+  letter-spacing: -0.015em;
+}
+
+/* Indic Script Specific Typography Rules */
+:lang(ml), [lang="ml"], .font-malayalam {
+  font-family: 'Anek Malayalam', 'Inter', sans-serif;
+}
+
+:lang(ta), [lang="ta"], .font-tamil {
+  font-family: 'Anek Tamil', 'Inter', sans-serif;
+}
+
+:lang(hi), [lang="hi"], .font-hindi {
+  font-family: 'Anek Devanagari', 'Inter', sans-serif;
+}
+
+:lang(ml) h1, :lang(ml) h2, :lang(ml) h3,
+:lang(ml) .font-serif, :lang(ml) .font-display {
+  font-family: 'Anek Malayalam', 'Inter', sans-serif;
+  letter-spacing: normal;
+}
+
+:lang(ta) h1, :lang(ta) h2, :lang(ta) h3,
+:lang(ta) .font-serif, :lang(ta) .font-display {
+  font-family: 'Anek Tamil', 'Inter', sans-serif;
+  letter-spacing: normal;
+}
+
+:lang(hi) h1, :lang(hi) h2, :lang(hi) h3,
+:lang(hi) .font-serif, :lang(hi) .font-display {
+  font-family: 'Anek Devanagari', 'Inter', sans-serif;
+  letter-spacing: normal;
+}
+
+/* Exact malayalamchats.com Card Aesthetics */
+.mc-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.mc-card-gold {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px -4px rgba(201, 162, 39, 0.22);
+}
+
+/* Form Input Styling matching malayalamchats.com */
+.mc-input {
+  background-color: #FFFFFF;
+  color: var(--foreground);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.15s ease-in-out;
+}
+
+.mc-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.20);
+}
+
+/* Buttons */
+.mc-btn-gold {
+  background-color: var(--gold);
+  color: var(--gold-foreground);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  border-radius: var(--radius);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px 0 rgba(201, 162, 39, 0.28);
+}
+
+.mc-btn-gold:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px 0 rgba(201, 162, 39, 0.40);
+}
+
+.mc-btn-gold:active {
+  transform: translateY(1px);
+}
+
+.mc-btn-primary {
+  background-color: #1D221F;
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 12px 0 rgba(29, 34, 31, 0.20);
+}
+
+.mc-btn-primary:hover {
+  background-color: #2D3530;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px 0 rgba(29, 34, 31, 0.28);
+}
+
+.mc-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.mc-btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.15s ease;
+}
+
+.mc-btn-secondary:hover {
+  background-color: var(--muted);
+  border-color: var(--primary);
+}
+
+.gold-text {
+  color: var(--gold);
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
 }

@@ -1,0 +1,18 @@
+{
+  "name": "Kerala Lottery Result Checker",
+  "short_name": "Lottery Checker",
+  "description": "High-accuracy, gazette-verified Kerala State Lottery result verification system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F2EB",
+  "theme_color": "#C9A227",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
