@@ -174,31 +174,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Ensure PDF file exists in public/samples for direct viewing/downloading
-    const samplesDir = path.join(process.cwd(), 'public', 'samples');
-    if (!fs.existsSync(samplesDir)) {
-      fs.mkdirSync(samplesDir, { recursive: true });
-    }
-
+    // 5. Best-effort cache of PDF file to disk / ephemeral storage
+    // Note: On Serverless platforms like Vercel, the root filesystem is read-only (EROFS).
+    // The /samples/[filename] route automatically generates/serves the PDF from database/source_files on demand.
     let pdfFilename = filename;
     if (isPdf) {
-      const targetPath = path.join(samplesDir, filename);
-      if (!targetPath.startsWith(samplesDir + path.sep) && targetPath !== samplesDir) {
-        throw new Error('Security Error: Illegal path traversal detected.');
-      }
-      fs.writeFileSync(targetPath, rawBuffer);
+      pdfFilename = sanitizeFilename(filename, '.pdf');
     } else {
       pdfFilename = filename.replace(/\.(txt|json|csv)$/i, '') + '.pdf';
       if (!pdfFilename.endsWith('.pdf')) pdfFilename += '.pdf';
       pdfFilename = sanitizeFilename(pdfFilename, '.pdf');
-      const targetPath = path.join(samplesDir, pdfFilename);
-      if (!targetPath.startsWith(samplesDir + path.sep) && targetPath !== samplesDir) {
-        throw new Error('Security Error: Illegal path traversal detected.');
-      }
-      const pdfBuf = generateGazettePdf(parseResult.rawText);
-      fs.writeFileSync(targetPath, pdfBuf);
     }
     const publicPdfUrl = `/samples/${pdfFilename}`;
+
+    try {
+      const samplesDir = path.join(process.cwd(), 'public', 'samples');
+      if (!fs.existsSync(samplesDir)) {
+        fs.mkdirSync(samplesDir, { recursive: true });
+      }
+      const targetPath = path.join(samplesDir, pdfFilename);
+      if (targetPath.startsWith(samplesDir + path.sep) || targetPath === samplesDir) {
+        const fileBuf = isPdf ? rawBuffer : generateGazettePdf(parseResult.rawText);
+        fs.writeFileSync(targetPath, fileBuf);
+      }
+    } catch {
+      // Ephemeral /tmp fallback for serverless environments (AWS Lambda / Vercel)
+      try {
+        const tmpSamplesDir = path.join('/tmp', 'samples');
+        if (!fs.existsSync(tmpSamplesDir)) {
+          fs.mkdirSync(tmpSamplesDir, { recursive: true });
+        }
+        const tmpTargetPath = path.join(tmpSamplesDir, pdfFilename);
+        const fileBuf = isPdf ? rawBuffer : generateGazettePdf(parseResult.rawText);
+        fs.writeFileSync(tmpTargetPath, fileBuf);
+      } catch (tmpErr) {
+        console.warn('Ephemeral file cache skipped on serverless:', tmpErr);
+      }
+    }
 
     // 6. Save to database in initial status (VERIFIED or NEEDS_VERIFICATION)
     const { drawId, status } = await LotteryRepository.saveImportedDraw(

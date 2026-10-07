@@ -20,9 +20,21 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid file request.' }, { status: 400 });
     }
 
-    // 1. If the file exists directly on disk in public/samples, serve it
+    // 1. If the file exists directly on disk in public/samples or /tmp/samples, serve it
     if (fs.existsSync(diskPath)) {
       const fileBuffer = fs.readFileSync(diskPath);
+      return new NextResponse(new Uint8Array(fileBuffer), {
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${cleanFilename}"`,
+          'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400'
+        }
+      });
+    }
+
+    const tmpPath = path.join('/tmp', 'samples', cleanFilename);
+    if (fs.existsSync(tmpPath)) {
+      const fileBuffer = fs.readFileSync(tmpPath);
       return new NextResponse(new Uint8Array(fileBuffer), {
         headers: {
           'Content-Type': 'application/pdf',
